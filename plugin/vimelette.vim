@@ -35,7 +35,7 @@ function! s:ExtractOmeletteDir(path) abort
 endfunction
 
 function! s:Detect(path)
-  if exists('b:omelette_path') && b:omelette_path ==# ''
+  if exists('b:omelette_path') && b:omelette_path == ''
     unlet b:omelette_path
   endif
   if !exists('b:omelette_path')
@@ -48,8 +48,26 @@ function! s:Detect(path)
 endfunction
 
 function! s:SetGlobal()
+  if exists("g:ropevim_loaded") && !exists("*s:RopeSetup")
+    function! s:RopeSetup(omelette_path)
+      python << EOF
+import ropevim
+import vim
+omelette_path = vim.eval('a:omelette_path')
+interface = ropevim._interface
+if interface.project is None or interface.project.address != omelette_path:
+    interface.open_project(omelette_path)
+    ropevim.echo("project opened")
+EOF
+    endfunction
+  endif
   if exists('b:omelette_path')
-    let g:omelette_path = b:omelette_path
+    if !exists('g:omelette_path') || (exists('g:omelette_path') && g:omelette_path != b:omelette_path)
+      let g:omelette_path = b:omelette_path
+      if exists("*s:RopeSetup")
+        call s:RopeSetup(g:omelette_path)
+      endif
+    endif
   endif
 endfunction
 
@@ -71,3 +89,4 @@ if exists("g:command_t_loaded")
     exec 'CommandT '. g:omelette_path  
   endfunction
 endif
+

@@ -25,8 +25,7 @@ function! s:ExtractOmeletteDir(path) abort
   let ofn = ""
   let nfn = fn
   while fn != ofn
-    echomsg fn
-    if filereadable(fn . '/parts/omelette')
+    if isdirectory(fn . '/parts/omelette')
       return s:sub(simplify(fnamemodify(fn . '/parts/omelette',':p')),'\W$','')
     endif
     let ofn = fn
@@ -36,26 +35,39 @@ function! s:ExtractOmeletteDir(path) abort
 endfunction
 
 function! s:Detect(path)
-  echomsg a:path
-  if exists('b:omelette_dir') && b:omelette_dir ==# ''
-    unlet b:omelette_dir
+  if exists('b:omelette_path') && b:omelette_path ==# ''
+    unlet b:omelette_path
   endif
-  if !exists('b:omelette_dir')
+  if !exists('b:omelette_path')
     let dir = s:ExtractOmeletteDir(a:path)
     if dir != ''
-      let b:omelette_dir = dir
+      let b:omelette_path = dir
     endif
   endif
-  if exists('b:omelette_dir')
-      echomsg(b:omelette_dir)
+  call s:SetGlobal()
+endfunction
+
+function! s:SetGlobal()
+  if exists('b:omelette_path')
+    let g:omelette_path = b:omelette_path
   endif
 endfunction
 
 augroup vimelette
   autocmd!
   autocmd BufNewFile,BufReadPost * call s:Detect(expand('<amatch>:p'))
+  autocmd BufEnter * call s:SetGlobal()
   autocmd FileType           netrw call s:Detect(expand('<afile>:p'))
   autocmd VimEnter * if expand('<amatch>')==''|call s:Detect(getcwd())|endif
 augroup END
+  
+if exists("g:command_t_loaded")
+  nmap <silent> <Leader>co :call CommandTOmelette()<CR>
 
-echomsg 'vimelette loaded'
+  function! CommandTOmelette()
+    if !exists("g:omelette_path")
+      let g:omelette_path = input("Omelette Path: ", ".", "file")
+    endif
+    exec 'CommandT '. g:omelette_path  
+  endfunction
+endif

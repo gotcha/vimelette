@@ -25,6 +25,7 @@ function! s:ExtractOmeletteDir(path) abort
   let ofn = ""
   let nfn = fn
   while fn != ofn
+    echomsg fn
     if filereadable(fn . '/parts/omelette')
       return s:sub(simplify(fnamemodify(fn . '/parts/omelette',':p')),'\W$','')
     endif
@@ -35,7 +36,8 @@ function! s:ExtractOmeletteDir(path) abort
 endfunction
 
 function! s:Detect(path)
-  if exists('b:omelette_dir') && b:git_dir ==# ''
+  echomsg a:path
+  if exists('b:omelette_dir') && b:omelette_dir ==# ''
     unlet b:omelette_dir
   endif
   if !exists('b:omelette_dir')
@@ -45,7 +47,7 @@ function! s:Detect(path)
     endif
   endif
   if exists('b:omelette_dir')
-      echo(b:omelette_dir)
+      echomsg(b:omelette_dir)
   endif
 endfunction
 
@@ -55,3 +57,5 @@ augroup vimelette
   autocmd FileType           netrw call s:Detect(expand('<afile>:p'))
   autocmd VimEnter * if expand('<amatch>')==''|call s:Detect(getcwd())|endif
 augroup END
+
+echomsg 'vimelette loaded'

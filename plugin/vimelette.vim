@@ -78,14 +78,33 @@ augroup vimelette
   autocmd VimEnter * call s:Detect(getcwd())
 augroup END
   
+function! s:checkOmelette()
+  if !exists("g:omelette_path")
+    let g:omelette_path = input("Omelette Path: ", ".", "file")
+  endif
+endfunction
+
 if exists("g:command_t_loaded")
-  nmap <silent> <Leader>co :call CommandTOmelette()<CR>
+  nmap <silent> <Leader>oct :call CommandTOmelette()<CR>
 
   function! CommandTOmelette()
-    if !exists("g:omelette_path")
-      let g:omelette_path = input("Omelette Path: ", ".", "file")
-    endif
+    call s:checkOmelette()
     exec 'CommandT '. g:omelette_path  
   endfunction
 endif
 
+if exists("loaded_nerd_tree")
+  nmap <silent> <Leader>ont :call NerdOmelette()<CR>
+
+  function! NerdOmelette()
+    call s:checkOmelette()
+    exec 'NERDTreeToggle '. g:omelette_path  
+  endfunction
+endif
+
+function! ExploreOmelette()
+  call s:checkOmelette()
+  exec 'Explore '. g:omelette_path  
+endfunction
+
+nmap <silent> <Leader>oe :call ExploreOmelette()<CR>

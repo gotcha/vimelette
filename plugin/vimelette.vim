@@ -35,6 +35,7 @@ function! s:ExtractOmeletteDir(path) abort
 endfunction
 
 function! s:Detect(path)
+  "echom a:path
   if exists('b:omelette_path') && b:omelette_path == ''
     unlet b:omelette_path
   endif
@@ -42,7 +43,10 @@ function! s:Detect(path)
     let dir = s:ExtractOmeletteDir(a:path)
     if dir != ''
       let b:omelette_path = dir
+      let g:omelette_path = dir
     endif
+  else
+    let g:omelette_path = b:omelette_path
   endif
   call s:SetGlobal()
 endfunction
@@ -61,13 +65,8 @@ if interface.project is None or interface.project.address != omelette_path:
 EOF
     endfunction
   endif
-  if exists('b:omelette_path')
-    if !exists('g:omelette_path') || (exists('g:omelette_path') && g:omelette_path != b:omelette_path)
-      let g:omelette_path = b:omelette_path
-      if exists("*s:RopeSetup")
-        call s:RopeSetup(g:omelette_path)
-      endif
-    endif
+  if exists('g:omelette_path') && exists("*s:RopeSetup")
+    call s:RopeSetup(g:omelette_path)
   endif
 endfunction
 
@@ -76,7 +75,7 @@ augroup vimelette
   autocmd BufNewFile,BufReadPost * call s:Detect(expand('<amatch>:p'))
   autocmd BufEnter * call s:SetGlobal()
   autocmd FileType           netrw call s:Detect(expand('<afile>:p'))
-  autocmd VimEnter * if expand('<amatch>')==''|call s:Detect(getcwd())|endif
+  autocmd VimEnter * call s:Detect(getcwd())
 augroup END
   
 if exists("g:command_t_loaded")

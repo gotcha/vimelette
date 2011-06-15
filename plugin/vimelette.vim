@@ -1,5 +1,7 @@
 if exists('g:loaded_vimelette') || &cp
-  finish
+  if !exists('g:debug_vimelette')
+    finish
+  endif  
 endif
 let g:loaded_vimelette = 1
 
@@ -55,13 +57,30 @@ function! s:SetGlobal()
   if exists("g:ropevim_loaded") && !exists("*s:RopeSetup")
     function! s:RopeSetup(omelette_path)
       python << EOF
+import rope
 import ropevim
 import vim
+import os
+from rope.contrib import autoimport
+
+def open_project(self, root):
+    if self.project is not None:
+        self.close_project()
+    address = rope.base.project._realpath(os.path.join(root,
+                                                       '.ropeproject'))
+    progress = self.env.create_progress('Opening [%s] project' % root)
+    self.project = rope.base.project.Project(root)
+    if self.env.get('enable_autoimport'):
+        underlined = self.env.get('autoimport_underlineds')
+        self.autoimport = autoimport.AutoImport(self.project,
+                                                underlined=underlined)
+    progress.done()
+
 omelette_path = vim.eval('a:omelette_path')
 interface = ropevim._interface
 if interface.project is None or interface.project.address != omelette_path:
-    interface.open_project(omelette_path)
-    ropevim.echo("project opened")
+    open_project(interface, omelette_path)
+    ropevim.echo("Rope project opened at %s" % omelette_path)
 EOF
     endfunction
   endif
@@ -84,27 +103,58 @@ function! s:checkOmelette()
   endif
 endfunction
 
-if exists("g:command_t_loaded")
-  nmap <silent> <Leader>oct :call CommandTOmelette()<CR>
-
-  function! CommandTOmelette()
-    call s:checkOmelette()
-    exec 'CommandT '. g:omelette_path  
-  endfunction
-endif
-
-if exists("loaded_nerd_tree")
-  nmap <silent> <Leader>ont :call NerdOmelette()<CR>
-
-  function! NerdOmelette()
-    call s:checkOmelette()
-    exec 'NERDTreeToggle '. g:omelette_path  
-  endfunction
-endif
-
-function! ExploreOmelette()
+function! OmeletteExplore()
   call s:checkOmelette()
   exec 'Explore '. g:omelette_path  
 endfunction
 
-nmap <silent> <Leader>oe :call ExploreOmelette()<CR>
+command! OmeletteExplore call OmeletteExplore()
+nmap <silent> <Leader>oe :OmeletteExplore<CR>
+
+function! OmeletteGrep(args)
+    call s:checkOmelette()
+    execute "silent! grep " . a:args . ' ' . g:omelette_path
+    botright copen
+    exec "redraw!"
+endfunction
+
+command! -nargs=*  OmeletteGrep call OmeletteGrep(<q-args>)
+
+"Command T plugin
+"
+if exists("g:command_t_loaded")
+
+  function! OmeletteCommandT()
+    call s:checkOmelette()
+    exec 'CommandT '. g:omelette_path  
+  endfunction
+  
+  command! OmeletteCommandT call OmeletteCommandT()
+  nmap <silent> <Leader>oct :OmeletteCommandT<CR>
+endif
+
+"NerdTree plugin
+"
+if exists("loaded_nerd_tree")
+
+  function! OmeletteNerd()
+    call s:checkOmelette()
+    exec 'NERDTreeToggle '. g:omelette_path  
+  endfunction
+  
+  command! OmeletteNerd call OmeletteNerd()
+  nmap <silent> <Leader>ont :OmeletteNerd<CR>
+endif
+
+"Ack plugin
+"
+if exists("g:ackprg")
+
+  function! OmeletteAck(args)
+    call s:checkOmelette()
+    let args = a:args . ' --follow ' . g:omelette_path
+    call Ack(args)
+  endfunction
+
+  command! -nargs=*  OmeletteAck call OmeletteAck(<q-args>)
+endif

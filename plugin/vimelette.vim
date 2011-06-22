@@ -111,6 +111,17 @@ endfunction
 command! OmeletteExplore call OmeletteExplore()
 nmap <silent> <Leader>oe :OmeletteExplore<CR>
 
+function! OmeletteWhich()
+    if !exists("g:omelette_path")
+        echo "No omelette"
+    else
+        echo "Omelette at " . g:omelette_path
+    endif
+endfunction
+
+command! OmeletteWhich call OmeletteWhich()
+nmap <silent> <Leader>ow :OmeletteWhich<CR>
+
 function! OmeletteGrep(args)
     call s:checkOmelette()
     execute "silent! grep " . a:args . ' ' . g:omelette_path

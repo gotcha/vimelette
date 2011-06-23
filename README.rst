@@ -1,0 +1,1 @@
+Vim plugin that detects omelette directory (set of Python eggs) and use it to setup other plugins. 

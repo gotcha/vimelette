@@ -124,7 +124,7 @@ nmap <silent> <Leader>ow :OmeletteWhich<CR>
 
 function! OmeletteGrep(args)
     call s:checkOmelette()
-    execute "silent! grep " . a:args . ' ' . g:omelette_path
+    execute "!grep " . a:args . ' ' . g:omelette_path
     botright copen
     exec "redraw!"
 endfunction

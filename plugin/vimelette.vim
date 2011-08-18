@@ -84,8 +84,10 @@ if interface.project is None or interface.project.address != omelette_path:
 EOF
     endfunction
   endif
-  if exists('g:omelette_path') && exists("*s:RopeSetup")
-    call s:RopeSetup(g:omelette_path)
+  if exists('g:omelette_path')
+    if exists("*s:RopeSetup")
+      call s:RopeSetup(g:omelette_path)
+    endif
   endif
 endfunction
 

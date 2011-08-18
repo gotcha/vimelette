@@ -93,7 +93,7 @@ augroup vimelette
   autocmd!
   autocmd BufNewFile,BufReadPost * call s:Detect(expand('<amatch>:p'))
   autocmd BufEnter * call s:SetGlobal()
-  autocmd FileType           netrw call s:Detect(expand('<afile>:p'))
+  autocmd FileType netrw call s:Detect(expand('<afile>:p'))
   autocmd VimEnter * call s:Detect(getcwd())
 augroup END
   

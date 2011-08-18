@@ -103,6 +103,14 @@ function! s:checkOmelette()
   endif
 endfunction
 
+function! OmeletteCd()
+  call s:checkOmelette()
+  exec 'cd '. g:omelette_path  
+endfunction
+
+command! OmeletteCd call OmeletteCd()
+nmap <silent> <Leader>ocd :OmeletteCd<CR>
+
 function! OmeletteExplore()
   call s:checkOmelette()
   exec 'Explore '. g:omelette_path  

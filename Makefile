@@ -1,20 +1,20 @@
 #!/usr/bin/make
 #
-.PHONY: bootstrap
-bootstrap:
-	virtualenv-2.6 --no-site-packages tests
-	cd ${CURDIR}/tests; ./bin/python ./bootstrap.py
+all: test
 
-.PHONY: buildout
-buildout:
-	if ! test -f ./tests/bin/buildout;then make bootstrap;fi
-	cd ${CURDIR}/tests; ./bin/buildout -vt 5
+tests/bin/python:
+	virtualenv-2.6 --no-site-packages tests
+
+tests/bin/buildout: tests/bin/python tests/bootstrap.py tests/buildout.cfg
+	cd tests; ./bin/python bootstrap.py
+
+tests/bin/pybot: tests/bin/buildout
+	cd tests; ./bin/buildout -vt 5
 
 .PHONY: test
-test:
-	if ! test -f ./tests/bin/pybot;then make buildout;fi
-	./tests/bin/pybot tests/vimelette.txt
+test: tests/bin/pybot
+	tests/bin/pybot tests/vimelette.txt
 
 .PHONY: cleanall
 cleanall:
-	cd ${CURDIR}/tests; rm -fr develop-eggs downloads eggs parts .installed.cfg
+	cd tests; rm -fr bin develop-eggs downloads eggs parts .installed.cfg

@@ -16,6 +16,6 @@ No omelette
     Is on screen  No omelette
 
 *** Keywords ***
-Start  Start vim  rcfiles=${EXECDIR}/../plugin/vimelette.vim
+Start  Start vim  rcfiles=${EXECDIR}/plugin/vimelette.vim
 Stop  Stop vim
     

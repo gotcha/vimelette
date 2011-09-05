@@ -1,0 +1,21 @@
+*** Settings ***
+Library     vimrobot
+
+Test Setup  Start
+Test Teardown  Stop
+
+*** Variables ***
+
+*** Test cases ***
+
+Startup
+    Is on screen  by Bram
+
+No omelette
+    Send keys  :OmeletteWhich\n
+    Is on screen  No omelette
+
+*** Keywords ***
+Start  Start vim  rcfiles=${EXECDIR}/../plugin/vimelette.vim
+Stop  Stop vim
+    

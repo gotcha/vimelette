@@ -1,4 +1,4 @@
-if exists('g:loaded_vimelette') || &cp
+if exists('g:loaded_vimelette')
   if !exists('g:debug_vimelette')
     finish
   endif  

@@ -1,3 +1,3 @@
-take care of omelette directory canged by buildout
+take care of omelette directory changed by buildout
   - compare directory creation date with vimelette omelette initialization
     date.

@@ -86,7 +86,7 @@ EOF
   endif
   if exists('g:omelette_path')
     if exists("*s:RopeSetup")
-      call s:RopeSetup(g:omelette_path)
+    " call s:RopeSetup(g:omelette_path)
     endif
   endif
 endfunction

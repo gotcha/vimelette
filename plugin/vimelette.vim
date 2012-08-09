@@ -54,39 +54,10 @@ function! s:Detect(path)
 endfunction
 
 function! s:SetGlobal()
-  if exists("g:ropevim_loaded") && !exists("*s:RopeSetup")
-    function! s:RopeSetup(omelette_path)
-      python << EOF
-import rope
-import ropevim
-import vim
-import os
-from rope.contrib import autoimport
-
-def open_project(self, root):
-    if self.project is not None:
-        self.close_project()
-    address = rope.base.project._realpath(os.path.join(root,
-                                                       '.ropeproject'))
-    progress = self.env.create_progress('Opening [%s] project' % root)
-    self.project = rope.base.project.Project(root)
-    if self.env.get('enable_autoimport'):
-        underlined = self.env.get('autoimport_underlineds')
-        self.autoimport = autoimport.AutoImport(self.project,
-                                                underlined=underlined)
-    progress.done()
-
-omelette_path = vim.eval('a:omelette_path')
-interface = ropevim._interface
-if interface.project is None or interface.project.address != omelette_path:
-    open_project(interface, omelette_path)
-    ropevim.echo("Rope project opened at %s" % omelette_path)
-EOF
-    endfunction
-  endif
-  if exists('g:omelette_path')
-    if exists("*s:RopeSetup")
-    " call s:RopeSetup(g:omelette_path)
+  if exists('b:omelette_path')
+    let tags_path = b:omelette_path . '/tags'
+    if filereadable(tags_path)
+      exec 'set tags='. tags_path
     endif
   endif
 endfunction
@@ -132,15 +103,6 @@ endfunction
 command! OmeletteWhich call OmeletteWhich()
 nmap <silent> <Leader>ow :OmeletteWhich<CR>
 
-function! OmeletteGrep(args)
-    call s:checkOmelette()
-    execute "!grep " . a:args . ' ' . g:omelette_path
-    botright copen
-    exec "redraw!"
-endfunction
-
-command! -nargs=*  OmeletteGrep call OmeletteGrep(<q-args>)
-
 "Command T plugin
 "
 if exists("g:command_t_loaded")
@@ -165,17 +127,4 @@ if exists("loaded_nerd_tree")
   
   command! OmeletteNerd call OmeletteNerd()
   nmap <silent> <Leader>ont :OmeletteNerd<CR>
-endif
-
-"Ack plugin
-"
-if exists("g:ackprg")
-
-  function! OmeletteAck(args)
-    call s:checkOmelette()
-    let args = a:args . ' --follow ' . g:omelette_path
-    call Ack(args)
-  endfunction
-
-  command! -nargs=*  OmeletteAck call OmeletteAck(<q-args>)
 endif

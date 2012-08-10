@@ -54,8 +54,8 @@ function! s:Detect(path)
 endfunction
 
 function! s:SetGlobal()
-  if exists('b:omelette_path')
-    let tags_path = b:omelette_path . '/tags'
+  if exists('g:omelette_path')
+    let tags_path = g:omelette_path . '/tags'
     if filereadable(tags_path)
       exec 'set tags='. tags_path
     endif
@@ -65,11 +65,11 @@ endfunction
 augroup vimelette
   autocmd!
   autocmd BufNewFile,BufReadPost * call s:Detect(expand('<amatch>:p'))
-  autocmd BufEnter * call s:SetGlobal()
+  autocmd BufEnter,WinEnter * call s:SetGlobal()
   autocmd FileType netrw call s:Detect(expand('<afile>:p'))
   autocmd VimEnter * call s:Detect(getcwd())
 augroup END
-  
+
 function! s:checkOmelette()
   if !exists("g:omelette_path")
     let g:omelette_path = input("Omelette Path: ", ".", "file")

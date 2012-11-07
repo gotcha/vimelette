@@ -38,7 +38,7 @@ endfunction
 
 function! s:Detect(path)
   "echom a:path
-  if exists('b:omelette_path') && b:omelette_path == ''
+  if exists('b:omelette_path') && b:omelette_path != ''
     unlet b:omelette_path
   endif
   if !exists('b:omelette_path')
@@ -84,6 +84,22 @@ endfunction
 command! OmeletteCd call OmeletteCd()
 nmap <silent> <Leader>ocd :OmeletteCd<CR>
 
+function! OmeletteOpen(file_path)
+  call OmeletteCd()
+  exec 'e '. a:file_path  
+endfunction
+command! -nargs=1 OmeletteOpen call OmeletteOpen("<args>")
+
+function! OmeletteDetect()
+  let file_path = getcwd()
+  echo "Current path : " . file_path
+  call s:Detect(file_path)
+  call OmeletteWhich()
+endfunction
+
+command! OmeletteDetect call OmeletteDetect()
+nmap <silent> <Leader>od :OmeletteDetect<CR>
+
 function! OmeletteExplore()
   call s:checkOmelette()
   exec 'Explore '. g:omelette_path  
@@ -128,3 +144,7 @@ if exists("loaded_nerd_tree")
   command! OmeletteNerd call OmeletteNerd()
   nmap <silent> <Leader>ont :OmeletteNerd<CR>
 endif
+
+if exists('g:debug_vimelette')
+  echo "Vimelette loaded !"
+endif  

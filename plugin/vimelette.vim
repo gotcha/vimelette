@@ -3,7 +3,6 @@ if exists('g:loaded_vimelette')
     finish
   endif  
 endif
-let g:loaded_vimelette = 1
 
 function! s:sub(str,pat,rep) abort
   return substitute(a:str,'\v\C'.a:pat,a:rep,'')
@@ -145,6 +144,9 @@ if exists("loaded_nerd_tree")
   nmap <silent> <Leader>ont :OmeletteNerd<CR>
 endif
 
-if exists('g:debug_vimelette')
-  echo "Vimelette loaded !"
-endif  
+if exists('g:loaded_vimelette')
+  if exists('g:debug_vimelette')
+    echo "Vimelette loaded !"
+  endif  
+endif
+let g:loaded_vimelette = 1

@@ -78,6 +78,7 @@ endfunction
 function! OmeletteCd()
   call s:checkOmelette()
   exec 'cd '. g:omelette_path  
+  echo "PWD at " . g:omelette_path
 endfunction
 
 command! OmeletteCd call OmeletteCd()

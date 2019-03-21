@@ -1,7 +1,7 @@
 if exists('g:loaded_vimelette')
   if !exists('g:debug_vimelette')
     finish
-  endif  
+  endif
 endif
 
 function! s:sub(str,pat,rep) abort
@@ -77,7 +77,7 @@ endfunction
 
 function! OmeletteCd()
   call s:checkOmelette()
-  exec 'cd '. g:omelette_path  
+  exec 'cd '. g:omelette_path
   echo "PWD at " . g:omelette_path
 endfunction
 
@@ -86,7 +86,7 @@ nmap <silent> <Leader>ocd :OmeletteCd<CR>
 
 function! OmeletteOpen(file_path)
   call OmeletteCd()
-  exec 'e '. a:file_path  
+  exec 'e '. a:file_path
 endfunction
 command! -nargs=1 OmeletteOpen call OmeletteOpen("<args>")
 
@@ -102,7 +102,7 @@ nmap <silent> <Leader>od :OmeletteDetect<CR>
 
 function! OmeletteExplore()
   call s:checkOmelette()
-  exec 'Explore '. g:omelette_path  
+  exec 'Explore '. g:omelette_path
 endfunction
 
 command! OmeletteExplore call OmeletteExplore()
@@ -125,9 +125,9 @@ if exists("g:command_t_loaded")
 
   function! OmeletteCommandT()
     call s:checkOmelette()
-    exec 'CommandT '. g:omelette_path  
+    exec 'CommandT '. g:omelette_path
   endfunction
-  
+
   command! OmeletteCommandT call OmeletteCommandT()
   nmap <silent> <Leader>oct :OmeletteCommandT<CR>
 endif
@@ -138,9 +138,9 @@ if exists("loaded_nerd_tree")
 
   function! OmeletteNerd()
     call s:checkOmelette()
-    exec 'NERDTreeToggle '. g:omelette_path  
+    exec 'NERDTreeToggle '. g:omelette_path
   endfunction
-  
+
   command! OmeletteNerd call OmeletteNerd()
   nmap <silent> <Leader>ont :OmeletteNerd<CR>
 endif
@@ -148,6 +148,6 @@ endif
 if exists('g:loaded_vimelette')
   if exists('g:debug_vimelette')
     echo "Vimelette loaded !"
-  endif  
+  endif
 endif
 let g:loaded_vimelette = 1

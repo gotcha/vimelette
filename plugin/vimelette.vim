@@ -54,6 +54,7 @@ endfunction
 
 function! s:SetGlobal()
   if exists('g:omelette_path')
+    exec 'set path +='. g:omelette_path
     let tags_path = g:omelette_path . '/tags'
     if filereadable(tags_path)
       exec 'set tags='. tags_path

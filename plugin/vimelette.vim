@@ -152,6 +152,28 @@ if exists("loaded_nerd_tree")
   nmap <silent> <Leader>ont :OmeletteNerd<CR>
 endif
 
+"fzf
+if exists('g:fzf#vim#buffers')
+
+  function! OmeletteFiles()
+    call s:checkOmelette()
+    exec 'Files '. g:omelette_path
+  endfunction
+
+  command! OmeletteFiles call OmeletteFiles()
+  nmap <silent> <Leader>of :OmeletteFiles<CR>
+endif
+
+"ferret
+if get(g:, 'FerretLazyInit', 1)
+  function! OmeletteAck(pattern)
+    call s:checkOmelette()
+    echo "Searching omelette for " . a:pattern
+    exec 'Ack -L '. escape(a:pattern, ' ') . ' ' . g:omelette_path
+  endfunction
+  command! -nargs=1 OmeletteAck call OmeletteAck(<f-args>)
+endif
+
 if exists('g:loaded_vimelette')
   if exists('g:debug_vimelette')
     echo "Vimelette loaded !"

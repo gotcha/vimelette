@@ -66,8 +66,9 @@ augroup vimelette
   autocmd!
   autocmd BufNewFile,BufReadPost * call s:Detect(expand('<amatch>:p'))
   autocmd BufEnter,WinEnter * call s:SetGlobal()
-  autocmd FileType netrw call s:Detect(expand('<afile>:p'))
-  autocmd VimEnter * call s:Detect(getcwd())
+  autocmd FileType netrw call s:Detect(fnamemodify(get(b:, 'netrw_curdir', expand('<amatch>')), ':p'))
+  autocmd VimEnter * if empty(expand('<amatch>'))|call s:Detect(getcwd())|endif
+  autocmd CmdWinEnter * call s:Detect(expand('#:p'))
 augroup END
 
 function! s:checkOmelette()
